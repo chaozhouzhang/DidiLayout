@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="DidiLayout">
+        <!--面板高度-->
+        <attr name="umanoPanelHeight" format="dimension"/>
+        <!--阴影高度-->
+        <attr name="umanoShadowHeight" format="dimension"/>
+        <!--两轴偏移?-->
+        <attr name="umanoParallaxOffset" format="dimension"/>
+        <!---->
+        <attr name="umanoFadeColor" format="color"/>
+        <!---->
+        <attr name="umanoFlingVelocity" format="integer"/>
+        <!---->
+        <attr name="umanoDragView" format="reference"/>
+        <!--可滑动视图-->
+        <attr name="umanoScrollableView" format="reference"/>
+        <!--是否需要透明图层-->
+        <attr name="umanoOverlay" format="boolean"/>
+        <!---->
+        <attr name="umanoClipPanel" format="boolean"/>
+        <!---->
+        <attr name="umanoAnchorPoint" format="float"/>
+        <!--初始状态-->
+        <attr name="umanoInitialState" format="enum">
+            <enum name="expanded" value="0"/>
+            <enum name="collapsed" value="1"/>
+            <enum name="anchored" value="2"/>
+            <enum name="hidden" value="3"/>
+        </attr>
+        <!--滑动加速度-->
+        <attr name="umanoScrollInterpolator" format="reference"/>
+    </declare-styleable>
+
+</resources>
