@@ -1,9 +1,11 @@
 package me.chaozhouzhang.didi;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -28,18 +30,37 @@ public class DidiActivity extends AppCompatActivity {
     private TextView mTvBack;
 
     private MapView mMapView;
+    private ScrollLayout mScrollLayout;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_didi);
 
 
+        mLayout = findViewById(R.id.sliding_layout);
         mMapView = findViewById(R.id.map);
-
-
-        mLayout = (DidiLayout) findViewById(R.id.sliding_layout);
+        mScrollLayout = findViewById(R.id.scroll);
         mLlNav = findViewById(R.id.ll_nav);
+
+        mMapView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mScrollLayout.setCanScroll(false);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mScrollLayout.setCanScroll(true);
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
+
         mLayout.addPanelSlideListener(new DidiLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -52,18 +73,20 @@ public class DidiActivity extends AppCompatActivity {
                 if (newState == EXPANDED) {
                     mTvBack.setVisibility(View.VISIBLE);
                     ViewCompat.setTranslationY(mLlNav, -mLlNav.getHeight());
+                    mScrollLayout.setCanScroll(true);
                 } else {
                     mTvBack.setVisibility(View.GONE);
                     ViewCompat.setTranslationY(mLlNav, 0);
+                    mScrollLayout.setCanScroll(false);
                 }
             }
 
             @Override
             public void onMainSlide(float mainViewOffset) {
-
-
                 System.out.println("onMainSlide:" + mainViewOffset);
-//            ViewCompat.setTranslationY(mLlNav, mainViewOffset);
+                if (mainViewOffset==0){
+                    mScrollLayout.setCanScroll(false);
+                }
             }
         });
         mLayout.setFadeOnClickListener(new OnClickListener() {
@@ -79,6 +102,7 @@ public class DidiActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mLayout.setState(DidiLayout.State.COLLAPSED);
+                mScrollLayout.smoothScrollTo(0, 0);
             }
         });
     }
@@ -88,6 +112,7 @@ public class DidiActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mLayout != null && (mLayout.getState() == EXPANDED || mLayout.getState() == DidiLayout.State.ANCHORED)) {
             mLayout.setState(DidiLayout.State.COLLAPSED);
+            mScrollLayout.smoothScrollTo(0, 0);
         } else {
             super.onBackPressed();
         }

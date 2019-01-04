@@ -15,6 +15,7 @@
         sothree:umanoDragView="@+id/dragView"
         sothree:umanoInitialState="collapsed"
         sothree:umanoOverlay="true"
+        sothree:umanoFadeColor="@android:color/transparent"
         sothree:umanoPanelHeight="350dp"
         sothree:umanoParallaxOffset="200dp"
         sothree:umanoScrollableView="@id/scroll"
@@ -48,8 +49,9 @@
             android:orientation="vertical">
 
 
-            <ScrollView
+            <me.chaozhouzhang.didi.ScrollLayout
                 android:id="@+id/scroll"
+                android:scrollbars="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -326,7 +328,7 @@
 
                 </RelativeLayout>
 
-            </ScrollView>
+            </me.chaozhouzhang.didi.ScrollLayout>
 
             <TextView
                 android:id="@+id/tv_back"
