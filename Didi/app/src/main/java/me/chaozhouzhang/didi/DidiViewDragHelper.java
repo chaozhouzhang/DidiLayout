@@ -32,14 +32,14 @@ import android.view.animation.Interpolator;
 import java.util.Arrays;
 
 /**
- * DidiViewHelper is a utility class for writing custom ViewGroups. It offers a number
+ * DidiViewDragHelper is a utility class for writing custom ViewGroups. It offers a number
  * of useful operations and state tracking for allowing a user to drag and reposition
  * views within their parent ViewGroup.
  *
  * @author zhangchaozhou
  */
-public class DidiViewHelper {
-    private static final String TAG = DidiViewHelper.class.getSimpleName();
+public class DidiViewDragHelper {
+    private static final String TAG = DidiViewDragHelper.class.getSimpleName();
 
     /**
      * A null/invalid pointer ID.
@@ -202,9 +202,9 @@ public class DidiViewHelper {
     private final ViewGroup mParentView;
 
     /**
-     * A Callback is used as a communication channel with the DidiViewHelper back to the
+     * A Callback is used as a communication channel with the DidiViewDragHelper back to the
      * parent view using it. <code>on*</code>methods are invoked on significant events and several
-     * accessor methods are expected to provide the DidiViewHelper with more information
+     * accessor methods are expected to provide the DidiViewDragHelper with more information
      * about the state of the parent view upon request. The callback also makes decisions
      * governing the range and draggability of child views.
      * <p>
@@ -257,10 +257,10 @@ public class DidiViewHelper {
          * <p>Calling code may decide to fling or otherwise release the view to let it
          * settle into place. It should do so using {@link #settleCapturedViewAt(int, int)}
          * or {@link #flingCapturedView(int, int, int, int)}. If the Callback invokes
-         * one of these methods, the DidiViewHelper will enter {@link #STATE_SETTLING}
+         * one of these methods, the DidiViewDragHelper will enter {@link #STATE_SETTLING}
          * and the view capture will not fully end until it comes to a complete stop.
          * If neither of these methods is invoked before <code>onViewReleased</code> returns,
-         * the view will stop in place and the DidiViewHelper will return to
+         * the view will stop in place and the DidiViewDragHelper will return to
          * {@link #STATE_IDLE}.</p>
          *
          * @param releasedChild The captured child view now being released
@@ -348,7 +348,7 @@ public class DidiViewHelper {
          * with the pointer indicated by pointerId. The callback should return true if the user
          * is permitted to drag the given view with the indicated pointer.
          *
-         * <p>DidiViewHelper may call this method multiple times for the same view even if
+         * <p>DidiViewDragHelper may call this method multiple times for the same view even if
          * the view is already captured; this indicates that a new pointer is trying to take
          * control of the view.</p>
          *
@@ -409,61 +409,61 @@ public class DidiViewHelper {
     };
 
     /**
-     * Factory method to create a new DidiViewHelper.
+     * Factory method to create a new DidiViewDragHelper.
      *
      * @param forParent Parent view to monitor
      * @param cb        Callback to provide information and receive events
-     * @return a new DidiViewHelper instance
+     * @return a new DidiViewDragHelper instance
      */
-    public static DidiViewHelper create(ViewGroup forParent, Callback cb) {
-        return new DidiViewHelper(forParent.getContext(), forParent, null, cb);
+    public static DidiViewDragHelper create(ViewGroup forParent, Callback cb) {
+        return new DidiViewDragHelper(forParent.getContext(), forParent, null, cb);
     }
 
     /**
-     * Factory method to create a new DidiViewHelper with the specified interpolator.
+     * Factory method to create a new DidiViewDragHelper with the specified interpolator.
      *
      * @param forParent    Parent view to monitor
      * @param interpolator interpolator for scroller
      * @param cb           Callback to provide information and receive events
-     * @return a new DidiViewHelper instance
+     * @return a new DidiViewDragHelper instance
      */
-    public static DidiViewHelper create(ViewGroup forParent, Interpolator interpolator, Callback cb) {
-        return new DidiViewHelper(forParent.getContext(), forParent, interpolator, cb);
+    public static DidiViewDragHelper create(ViewGroup forParent, Interpolator interpolator, Callback cb) {
+        return new DidiViewDragHelper(forParent.getContext(), forParent, interpolator, cb);
     }
 
     /**
-     * Factory method to create a new DidiViewHelper.
+     * Factory method to create a new DidiViewDragHelper.
      *
      * @param forParent   Parent view to monitor
      * @param sensitivity Multiplier for how sensitive the helper should be about detecting
      *                    the start of a drag. Larger values are more sensitive. 1.0f is normal.
      * @param cb          Callback to provide information and receive events
-     * @return a new DidiViewHelper instance
+     * @return a new DidiViewDragHelper instance
      */
-    public static DidiViewHelper create(ViewGroup forParent, float sensitivity, Callback cb) {
-        final DidiViewHelper helper = create(forParent, cb);
+    public static DidiViewDragHelper create(ViewGroup forParent, float sensitivity, Callback cb) {
+        final DidiViewDragHelper helper = create(forParent, cb);
         helper.mTouchSlop = (int) (helper.mTouchSlop * (1 / sensitivity));
         return helper;
     }
 
     /**
-     * Factory method to create a new DidiViewHelper with the specified interpolator.
+     * Factory method to create a new DidiViewDragHelper with the specified interpolator.
      *
      * @param forParent    Parent view to monitor
      * @param sensitivity  Multiplier for how sensitive the helper should be about detecting
      *                     the start of a drag. Larger values are more sensitive. 1.0f is normal.
      * @param interpolator interpolator for scroller
      * @param cb           Callback to provide information and receive events
-     * @return a new DidiViewHelper instance
+     * @return a new DidiViewDragHelper instance
      */
-    public static DidiViewHelper create(ViewGroup forParent, float sensitivity, Interpolator interpolator, Callback cb) {
-        final DidiViewHelper helper = create(forParent, interpolator, cb);
+    public static DidiViewDragHelper create(ViewGroup forParent, float sensitivity, Interpolator interpolator, Callback cb) {
+        final DidiViewDragHelper helper = create(forParent, interpolator, cb);
         helper.mTouchSlop = (int) (helper.mTouchSlop * (1 / sensitivity));
         return helper;
     }
 
     /**
-     * Apps should use DidiViewHelper.create() to get a new instance.
+     * Apps should use DidiViewDragHelper.create() to get a new instance.
      * This will allow VDH to use internal compatibility implementations for different
      * platform versions.
      * If the interpolator is null, the default interpolator will be used.
@@ -472,7 +472,7 @@ public class DidiViewHelper {
      * @param forParent    Parent view to monitor
      * @param interpolator interpolator for scroller
      */
-    private DidiViewHelper(Context context, ViewGroup forParent, Interpolator interpolator, Callback cb) {
+    private DidiViewDragHelper(Context context, ViewGroup forParent, Interpolator interpolator, Callback cb) {
         if (forParent == null) {
             throw new IllegalArgumentException("Parent view may not be null");
         }
@@ -562,7 +562,7 @@ public class DidiViewHelper {
     public void captureChildView(View childView, int activePointerId) {
         if (childView.getParent() != mParentView) {
             throw new IllegalArgumentException("captureChildView: parameter must be a descendant " +
-                    "of the DidiViewHelper's tracked parent view (" + mParentView + ")");
+                    "of the DidiViewDragHelper's tracked parent view (" + mParentView + ")");
         }
 
         mCapturedView = childView;
@@ -962,7 +962,7 @@ public class DidiViewHelper {
 
     /**
      * Check if the given pointer ID represents a pointer that is currently down (to the best
-     * of the DidiViewHelper's knowledge).
+     * of the DidiViewDragHelper's knowledge).
      *
      * <p>The state used to report this information is populated by the methods
      * {@link #shouldInterceptTouchEvent(MotionEvent)} or
@@ -1095,7 +1095,7 @@ public class DidiViewHelper {
 
                 saveInitialMotion(x, y, pointerId);
 
-                // A DidiViewHelper can only manipulate one view at a time.
+                // A DidiViewDragHelper can only manipulate one view at a time.
                 if (mDragState == STATE_IDLE) {
                     final int edgesTouched = mInitialEdgesTouched[pointerId];
                     if ((edgesTouched & mTrackingEdges) != 0) {
@@ -1205,7 +1205,7 @@ public class DidiViewHelper {
 
                 saveInitialMotion(x, y, pointerId);
 
-                // A DidiViewHelper can only manipulate one view at a time.
+                // A DidiViewDragHelper can only manipulate one view at a time.
                 if (mDragState == STATE_IDLE) {
                     // If we're idle we can do anything! Treat it like a normal down event.
 

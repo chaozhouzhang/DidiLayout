@@ -265,7 +265,7 @@ public class DidiLayout extends ViewGroup {
     /**
      * 拖拽帮助类
      */
-    private final DidiViewHelper mDragHelper;
+    private final DidiViewDragHelper mDragHelper;
 
     /**
      * Stores whether or not the pane was expanded the last time it was slideable.
@@ -291,11 +291,15 @@ public class DidiLayout extends ViewGroup {
         /**
          * Called when a sliding panel state changes
          *
-         * @param panel The child view that was slid to an collapsed position
+         * @param panel         The child view that was slid to an collapsed position
+         * @param newState
+         * @param previousState
          */
         public void onStateChanged(View panel, State previousState, State newState);
 
         /**
+         * 主页滑动距离
+         *
          * @param mainViewOffset
          */
         public void onMainSlide(float mainViewOffset);
@@ -321,10 +325,21 @@ public class DidiLayout extends ViewGroup {
     }
 
 
+    /**
+     * 构造函数
+     *
+     * @param context
+     */
     public DidiLayout(Context context) {
         this(context, null);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param context
+     * @param attrs
+     */
     public DidiLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -339,16 +354,25 @@ public class DidiLayout extends ViewGroup {
     public DidiLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        /**
+         * 是否处于编辑模式：解决可视化编辑器无法识别自定义控件的问题。
+         */
         if (isInEditMode()) {
             mShadowDrawable = null;
             mDragHelper = null;
             return;
         }
 
+        /**
+         * 插值器
+         */
         Interpolator scrollerInterpolator = null;
         if (attrs != null) {
-            TypedArray defAttrs = context.obtainStyledAttributes(attrs, DEFAULT_ATTRS);
 
+            /**
+             * 默认属性
+             */
+            TypedArray defAttrs = context.obtainStyledAttributes(attrs, DEFAULT_ATTRS);
             if (defAttrs != null) {
                 int gravity = defAttrs.getInt(0, Gravity.NO_GRAVITY);
                 setGravity(gravity);
@@ -356,8 +380,10 @@ public class DidiLayout extends ViewGroup {
             }
 
 
+            /**
+             * 自定义属性
+             */
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DidiLayout);
-
             if (ta != null) {
                 mPanelHeight = ta.getDimensionPixelSize(R.styleable.DidiLayout_umanoPanelHeight, -1);
                 mShadowHeight = ta.getDimensionPixelSize(R.styleable.DidiLayout_umanoShadowHeight, -1);
@@ -405,9 +431,12 @@ public class DidiLayout extends ViewGroup {
             mShadowDrawable = null;
         }
 
+        /**
+         *
+         */
         setWillNotDraw(false);
 
-        mDragHelper = DidiViewHelper.create(this, 0.5f, scrollerInterpolator, new DragHelperCallback());
+        mDragHelper = DidiViewDragHelper.create(this, 0.5f, scrollerInterpolator, new DragHelperCallback());
         mDragHelper.setMinVelocity(mMinFlingVelocity * density);
 
         mIsTouchEnabled = true;
@@ -1146,7 +1175,7 @@ public class DidiLayout extends ViewGroup {
             // If the scrollable view was handling the touch and we receive an up
             // we want to clear any previous dragging state so we don't intercept a touch stream accidentally
             if (mIsScrollableViewHandlingTouch) {
-                mDragHelper.setDragState(DidiViewHelper.STATE_IDLE);
+                mDragHelper.setDragState(DidiViewDragHelper.STATE_IDLE);
             }
         }
 
@@ -1209,7 +1238,7 @@ public class DidiLayout extends ViewGroup {
     public void setState(State state) {
 
         // Abort any running animation, to allow state change
-        if (mDragHelper.getViewDragState() == DidiViewHelper.STATE_SETTLING) {
+        if (mDragHelper.getViewDragState() == DidiViewDragHelper.STATE_SETTLING) {
             Log.d(TAG, "View is settling. Aborting animation.");
             mDragHelper.abort();
         }
@@ -1466,7 +1495,7 @@ public class DidiLayout extends ViewGroup {
         super.onRestoreInstanceState(state);
     }
 
-    private class DragHelperCallback extends DidiViewHelper.Callback {
+    private class DragHelperCallback extends DidiViewDragHelper.Callback {
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
@@ -1476,7 +1505,7 @@ public class DidiLayout extends ViewGroup {
 
         @Override
         public void onViewDragStateChanged(int state) {
-            if (mDragHelper != null && mDragHelper.getViewDragState() == DidiViewHelper.STATE_IDLE) {
+            if (mDragHelper != null && mDragHelper.getViewDragState() == DidiViewDragHelper.STATE_IDLE) {
                 mSlideOffset = computeSlideOffset(mSlideableView.getTop());
                 applyParallaxForCurrentSlideOffset();
 

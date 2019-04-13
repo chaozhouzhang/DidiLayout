@@ -29,17 +29,16 @@ public class ScrollLayout extends ScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-
-
-
-
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        System.out.println("can scroll " + canScroll);
+        /**
+         * 判断是否可以滑动
+         */
         if (isCanScroll()) {
+            //可以滑动
             return super.onInterceptTouchEvent(ev);
         } else {
+            //不可以滑动
             return false;
         }
     }

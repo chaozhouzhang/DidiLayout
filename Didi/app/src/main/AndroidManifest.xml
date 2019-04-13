@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <!--腾讯地图 sdk 要求的权限(结束)-->
 
-    <!-- 腾讯定位 sdk 要求的其他权限  (开始) -->
+    <!-- 腾讯定位 sdk M要求的其他权限  (开始) -->
     <!-- 通过GPS得到精确位置 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!-- 通过网络得到粗略位置 -->
